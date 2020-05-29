@@ -9,9 +9,9 @@ namespace robotic_arm
     {
         int formHeight;
         int formWidth;
-        float x, y, z, radius;
+        float x, y, z, radius, xMax, yMax, zMax;
 
-        public Form2(float x, float y, float z, float radius)
+        public Form2(float x, float y, float z, float radius, float xMax, float yMax, float zMax)
         {
             
             InitializeComponent();
@@ -391,7 +391,7 @@ namespace robotic_arm
             IntPtr quadric = gl.NewQuadric();
             gl.QuadricNormals(quadric, OpenGL.GLU_SMOOTH);
             
-            gl.Sphere(quadric,radius, 50, 50);//radis = 1.5
+            gl.Sphere(quadric,(double)radius, 50, 50);//radis = 1.5
             gl.DeleteQuadric(quadric);
         }
         void Draw_last_finger(OpenGL gl,float [] x, float [] z)//конец пальца
