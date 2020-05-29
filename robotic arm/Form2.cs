@@ -9,7 +9,7 @@ namespace robotic_arm
     {
         int formHeight;
         int formWidth;
-        float x, y, z, radius, xMax, yMax, zMax;
+        float x, y, z, radius;// xMax, yMax, zMax;
 
         public Form2(float x, float y, float z, float radius, float xMax, float yMax, float zMax)
         {
@@ -18,9 +18,9 @@ namespace robotic_arm
             formHeight = this.Height;
             formWidth = this.Width;
 
-            this.x = 20.0f * (x/1909.0f);
-            this.y = 20.0f * (y/1466.0f);
-            this.z = 20.0f * (z/4000.0f);//20-предел по z
+            this.x = 20.0f * (x/xMax);
+            this.y = 20.0f * (y/yMax);
+            this.z = 20.0f * (z/zMax);//20-предел по z
             this.radius = (radius*2)*(40.0f/(radius*2));//40.0-размер руки
         }
         bool taken = false;//объект захвачен или нет?
@@ -140,9 +140,9 @@ namespace robotic_arm
             else
             {
                 sphere_x = posarm_x;
-                sphere_y = posarm_y-2.5f;
+                sphere_y = posarm_y;
                 sphere_z = posarm_z;
-                gl.Translate(sphere_x, sphere_y, sphere_z);
+                gl.Translate(sphere_x, sphere_y-3.0f, sphere_z);
                 Drawsphere(gl,1.5);
             }
 
@@ -260,37 +260,37 @@ namespace robotic_arm
             {
                 if (posarm_y < sphere_y)//Y надо двигать до уровня сферы +3
                 {
-                    posarm_y += 0.5f;
-                    if (posarm_y > (sphere_y + 2.5f))
-                        posarm_y = sphere_y + 2.5f;
+                    posarm_y += 0.3f;
+                    if (posarm_y > (sphere_y + 3.0f))
+                        posarm_y = sphere_y +3.0f;
                 }
                 if (posarm_y > sphere_y)
                 {
-                    posarm_y -= 0.5f;
-                    if (posarm_y < (sphere_y + 2.5f))
-                        posarm_y = sphere_y + 2.5f;
+                    posarm_y -= 0.3f;
+                    if (posarm_y < (sphere_y + 3.0f))
+                        posarm_y = sphere_y + 3.0f;
                 }
                 if (posarm_x < sphere_x)//X надо двигать до уровня сферы
                 {
-                    posarm_x += 0.5f;
+                    posarm_x += 0.3f;
                     if (posarm_x == sphere_x)
                         posarm_x = sphere_x;
                 }
                 if (posarm_x > sphere_x)
                 {
-                    posarm_x -= 0.5f;
+                    posarm_x -= 0.3f;
                     if (posarm_x == sphere_x)
                         posarm_x = sphere_x;
                 }
                 if (posarm_z < sphere_z)//Z надо двигать до уровня сферы 
                 {
-                    posarm_z += 0.5f;
+                    posarm_z += 0.3f;
                     if (posarm_z == sphere_z)
                         posarm_z = sphere_z;
                 }
                 if (posarm_z > sphere_z)
                 {
-                    posarm_z -= 0.5f;
+                    posarm_z -= 0.3f;
                     if (posarm_z == sphere_z)
                         posarm_z = sphere_z;
             }
@@ -299,37 +299,37 @@ namespace robotic_arm
             {
                 if (posarm_y<MovetoY)//Y надо двигать до уровня сферы +3
                 {
-                    posarm_y += 0.5f;
-                    if (posarm_y > MovetoY + 2.5f)
-                        posarm_y = MovetoY + 2.5f;
+                    posarm_y += 0.3f;
+                    if (posarm_y > MovetoY + 3.0f)
+                        posarm_y = MovetoY + 3.0f;
                 }
                 if (posarm_y > MovetoY)
                 {
-                    posarm_y -= 0.5f;
-                    if (posarm_y<MovetoY + 2.5f)
-                        posarm_y = MovetoY + 2.5f;
+                    posarm_y -= 0.3f;
+                    if (posarm_y<MovetoY + 3.0f)
+                        posarm_y = MovetoY + 3.0f;
                 }
                 if (posarm_x<MovetoX)//X надо двигать до уровня сферы
                 {
-                    posarm_x += 0.5f;
+                    posarm_x += 0.3f;
                     if (posarm_x == MovetoX)
                         posarm_x = MovetoX;
                 }
                 if (posarm_x > MovetoX)
                 {
-                    posarm_x -= 0.5f;
+                    posarm_x -= 0.3f;
                     if (posarm_x == MovetoX)
                         posarm_x = MovetoX;
                 }
                 if (posarm_z<MovetoZ)//Z надо двигать до уровня сферы 
                 {
-                    posarm_z += 0.5f;
+                    posarm_z += 0.3f;
                     if (posarm_z == MovetoZ)
                         posarm_z = MovetoZ;
                 }
                 if (posarm_z > MovetoZ)
                 {
-                    posarm_z -= 0.5f;
+                    posarm_z -= 0.3f;
                     if (posarm_z == MovetoZ)
                         posarm_z = MovetoZ;
                 }
@@ -710,9 +710,9 @@ namespace robotic_arm
                     break;//finger1
                 case Keys.F8:
                     rotsidefing[1] -= step;
-                    if (rotsidefing[1] <= -35)
+                    if (rotsidefing[1] <= -40)
                     {
-                        rotsidefing[1] = -38;
+                        rotsidefing[1] = -40;
                     }
                     break;
                 case Keys.Back:
@@ -737,9 +737,9 @@ namespace robotic_arm
                 case Keys.O:
                  
                     rotsidefing[1] -= step;
-                    if (rotsidefing[1] <= -38)
+                    if (rotsidefing[1] <= -40)
                     {
-                        rotsidefing[1] = -38;
+                        rotsidefing[1] = -40;
                     }
                     rotfing_3_4[1] -= step;
                     if (rotfing_3_4[1] <= -53)
