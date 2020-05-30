@@ -21,13 +21,13 @@ namespace robotic_arm
             this.x = 20.0f * (x/xMax);
             this.y = 20.0f * (y/yMax);
             this.z = 20.0f * (z/zMax);//20-предел по z
-            this.radius = (radius*2)*(40.0f/(radius*2));//40.0-размер руки
+            //this.radius = (radius*2)*(20.0f/(radius*2))*0.08f;//20.0-размер руки/ масштаб 0.05
         }
         bool taken = false;//объект захвачен или нет?
 
         Texture texture = new Texture();
         Texture texture1 = new Texture();
-        float sphere_x = 0;
+        float sphere_x = 0.0f;
         float sphere_y = 0.0f;
         float sphere_z = 0.0f;
 
@@ -134,16 +134,17 @@ namespace robotic_arm
                 sphere_x = x;
                 sphere_y = y;
                 sphere_z = z;
-                gl.Translate(sphere_x, sphere_y, sphere_z);
-                Drawsphere(gl,1.5);
+                //gl.Translate(sphere_x - 0.25f, sphere_y, sphere_z - 0.25f);//why отклонение
+                gl.Translate(sphere_x-0.25f, sphere_y, sphere_z-0.25f);//why отклонение
+                Drawsphere(gl,1.5f);
             }
             else
             {
                 sphere_x = posarm_x;
                 sphere_y = posarm_y;
                 sphere_z = posarm_z;
-                gl.Translate(sphere_x, sphere_y-3.0f, sphere_z);
-                Drawsphere(gl,1.5);
+                gl.Translate(sphere_x, sphere_y-2.5f, sphere_z);
+                Drawsphere(gl,1.5f);
             }
 
             gl.PopMatrix();
@@ -252,23 +253,23 @@ namespace robotic_arm
            
 
             gl.Flush();
-            gl.DrawText(5, 65, 255, 0, 0, "", 12, "eyeX : " + eyeX + ", eyeY : " + eyeY + ", eyeZ : " + eyeZ + "");
-            gl.DrawText(5, 45, 255, 0, 0, "", 12, "centerX : " + centerX + ", centerY : " + centerY + ", centerZ : " + centerZ + "");
-            gl.DrawText(5, 25, 255, 0, 0, "", 12, "upX : " + upX + ", upY : " + upY + ", upZ : " + upZ + "");
+            gl.DrawText(5, 65, 255, 0, 0, "", 12, "SphereX : " + sphere_x + ", SphereY : " + sphere_y + ", SphereZ : " + sphere_z + "");
+            gl.DrawText(5, 45, 255, 0, 0, "", 12, "ArmX : " + posarm_x + ", Army : " + posarm_y + ", Armz : " + posarm_z + "");
+            gl.DrawText(5, 25, 255, 0, 0, "", 12, "eyeX : " + eyeX + ", eyeY : " + eyeY + ", eyeZ : " + eyeZ + "");
             //gl.PopMatrix();
             if (movearm == true)
             {
                 if (posarm_y < sphere_y)//Y надо двигать до уровня сферы +3
                 {
                     posarm_y += 0.3f;
-                    if (posarm_y > (sphere_y + 3.0f))
-                        posarm_y = sphere_y +3.0f;
+                    if (posarm_y > (sphere_y + 2.5f))
+                        posarm_y = sphere_y +2.5f;
                 }
                 if (posarm_y > sphere_y)
                 {
                     posarm_y -= 0.3f;
-                    if (posarm_y < (sphere_y + 3.0f))
-                        posarm_y = sphere_y + 3.0f;
+                    if (posarm_y < (sphere_y + 2.5f))
+                        posarm_y = sphere_y + 2.5f;
                 }
                 if (posarm_x < sphere_x)//X надо двигать до уровня сферы
                 {
@@ -295,19 +296,19 @@ namespace robotic_arm
                         posarm_z = sphere_z;
             }
         }
-            else
+            if(move == true)
             {
                 if (posarm_y<MovetoY)//Y надо двигать до уровня сферы +3
                 {
                     posarm_y += 0.3f;
-                    if (posarm_y > MovetoY + 3.0f)
-                        posarm_y = MovetoY + 3.0f;
+                    if (posarm_y > MovetoY + 2.5f)
+                        posarm_y = MovetoY + 2.5f;
                 }
                 if (posarm_y > MovetoY)
                 {
                     posarm_y -= 0.3f;
-                    if (posarm_y<MovetoY + 3.0f)
-                        posarm_y = MovetoY + 3.0f;
+                    if (posarm_y<MovetoY + 2.5f)
+                        posarm_y = MovetoY + 2.5f;
                 }
                 if (posarm_x<MovetoX)//X надо двигать до уровня сферы
                 {
@@ -383,7 +384,7 @@ namespace robotic_arm
             gl.PopMatrix();
 
         }
-        void Drawsphere(OpenGL gl, double radius)
+        void Drawsphere(OpenGL gl, float radius)
         {
             gl.Color(1.0f, 0.0f, 0.0f);
             //create sphere quadric
@@ -391,7 +392,7 @@ namespace robotic_arm
             IntPtr quadric = gl.NewQuadric();
             gl.QuadricNormals(quadric, OpenGL.GLU_SMOOTH);
             
-            gl.Sphere(quadric,(double)radius, 50, 50);//radis = 1.5
+            gl.Sphere(quadric,radius, 50, 50);//radius = 1.5
             gl.DeleteQuadric(quadric);
         }
         void Draw_last_finger(OpenGL gl,float [] x, float [] z)//конец пальца
@@ -821,13 +822,11 @@ namespace robotic_arm
                 MovetoZ = (float)Convert.ToDouble(Zmove.Text);
                 if (taken == true)
                 {
-                    movearm = false;
                     move = true;
                 }
                 else
                 {
                     move = false;
-                    movearm = false;
                 }
             }
             catch(Exception ex)
@@ -835,10 +834,12 @@ namespace robotic_arm
                 MessageBox.Show(ex.ToString());
             }
         }
-        bool movearm = false;
+        bool movearm = false;//enable movement of arm
         private void button2_Click(object sender, EventArgs e)
         {
-            movearm = true;
+            if (taken == false)
+                movearm = true;
+            
         }
     }
 
